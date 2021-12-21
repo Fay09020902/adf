@@ -1,0 +1,9 @@
+{
+	"name": "YJDF",
+	"location": "westus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "15f03769-b2ea-4460-b694-e230419dd714",
+		"tenantId": "3f59e85e-71b5-4962-905b-5d426baf9871"
+	}
+}
