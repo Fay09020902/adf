@@ -101,7 +101,8 @@
 										"TableName": {
 											"value": "@item().TABLE_NAME",
 											"type": "Expression"
-										}
+										},
+										"SchemaName": "Staging"
 									}
 								}
 							]
