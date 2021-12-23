@@ -1,0 +1,7 @@
+{
+	"name": "Oltp_TO_ODS",
+	"properties": {
+		"description": "copy data",
+		"annotations": []
+	}
+}
