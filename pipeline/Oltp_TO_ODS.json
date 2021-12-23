@@ -286,30 +286,6 @@
 							},
 							{
 								"source": {
-									"name": "Tags",
-									"type": "String",
-									"physicalType": "nvarchar"
-								},
-								"sink": {
-									"name": "Tags",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
-									"name": "SearchDetails",
-									"type": "String",
-									"physicalType": "nvarchar"
-								},
-								"sink": {
-									"name": "SearchDetails",
-									"type": "String",
-									"physicalType": "nvarchar"
-								}
-							},
-							{
-								"source": {
 									"name": "LastEditedBy",
 									"type": "Int32",
 									"physicalType": "int"
