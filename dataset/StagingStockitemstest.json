@@ -1,5 +1,5 @@
 {
-	"name": "StagingStockitems",
+	"name": "StagingStockitemstest",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ODS",

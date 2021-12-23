@@ -1,5 +1,5 @@
 {
-	"name": "Oltp_TO_ODS",
+	"name": "Oltp_TO_ODStest",
 	"properties": {
 		"description": "copy data",
 		"activities": [
@@ -330,13 +330,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Raw_Stockitems",
+						"referenceName": "Raw_Stockitemstest",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "StagingStockitems",
+						"referenceName": "StagingStockitemstest",
 						"type": "DatasetReference"
 					}
 				]

@@ -1,5 +1,5 @@
 {
-	"name": "Raw_Stockitems",
+	"name": "Raw_Stockitemstest",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "OLTP",

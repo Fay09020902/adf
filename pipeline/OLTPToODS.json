@@ -83,7 +83,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"TableName": {
-											"value": "@item().TableName",
+											"value": "@item().TABLE_NAME",
 											"type": "Expression"
 										}
 									}
@@ -95,7 +95,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"TableName": {
-											"value": "@concat('Staging','.',item().TableName)",
+											"value": "@item().TABLE_NAME",
 											"type": "Expression"
 										}
 									}
