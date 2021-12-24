@@ -1,0 +1,1240 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "YJDF"
+		},
+		"AzureSqlDatabase1demo_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1demo'"
+		},
+		"DW_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'DW'"
+		},
+		"ODS_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'ODS'"
+		},
+		"OLTP_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'OLTP'"
+		},
+		"inputblob_demo_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'inputblob_demo'"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1demo')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabase1demo_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DW')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('DW_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ODS')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('ODS_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OLTP')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('OLTP_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/inputblob_demo')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('inputblob_demo_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PeopleDim_DW')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "DW",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "Id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "PersonID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FullName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PreferredName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsPermittedToLogon",
+						"type": "bit"
+					},
+					{
+						"name": "LogonName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsExternalLogonProvider",
+						"type": "bit"
+					},
+					{
+						"name": "HashedPassword",
+						"type": "varbinary"
+					},
+					{
+						"name": "IsSystemUser",
+						"type": "bit"
+					},
+					{
+						"name": "IsEmployee",
+						"type": "bit"
+					},
+					{
+						"name": "IsSalesperson",
+						"type": "bit"
+					},
+					{
+						"name": "UserPreferences",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PhoneNumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FaxNumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EmailAddress",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Photo",
+						"type": "varbinary"
+					},
+					{
+						"name": "CustomFields",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastEditedBy",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ValidFrom",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "ValidTo",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "CurrentRow",
+						"type": "bit"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DimPeople"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/DW')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PeopleStaingTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ODS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "PersonID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "FullName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PreferredName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsPermittedToLogon",
+						"type": "bit"
+					},
+					{
+						"name": "LogonName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "IsExternalLogonProvider",
+						"type": "bit"
+					},
+					{
+						"name": "HashedPassword",
+						"type": "varbinary"
+					},
+					{
+						"name": "IsSystemUser",
+						"type": "bit"
+					},
+					{
+						"name": "IsEmployee",
+						"type": "bit"
+					},
+					{
+						"name": "IsSalesperson",
+						"type": "bit"
+					},
+					{
+						"name": "UserPreferences",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PhoneNumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FaxNumber",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EmailAddress",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Photo",
+						"type": "varbinary"
+					},
+					{
+						"name": "CustomFields",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastEditedBy",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ValidFrom",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "ValidTo",
+						"type": "datetime2",
+						"scale": 7
+					}
+				],
+				"typeProperties": {
+					"schema": "Staging",
+					"table": "People"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ODS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Raw_Stockitemstest')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OLTP",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "StockItemID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "StockItemName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SupplierID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ColorID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UnitPackageID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OuterPackageID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Brand",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Size",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LeadTimeDays",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "QuantityPerOuter",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "IsChillerStock",
+						"type": "bit"
+					},
+					{
+						"name": "Barcode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TaxRate",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "UnitPrice",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "RecommendedRetailPrice",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "TypicalWeightPerUnit",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "MarketingComments",
+						"type": "nvarchar"
+					},
+					{
+						"name": "InternalComments",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Photo",
+						"type": "varbinary"
+					},
+					{
+						"name": "CustomFields",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Tags",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SearchDetails",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastEditedBy",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ValidFrom",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "ValidTo",
+						"type": "datetime2",
+						"scale": 7
+					}
+				],
+				"typeProperties": {
+					"schema": "Warehouse",
+					"table": "StockItems"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OLTP')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQLOdsTables')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ODS",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TableName": {
+						"type": "string"
+					},
+					"SchemaName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().SchemaName",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().TableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ODS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SQLOltpTable')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OLTP",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"TableName": {
+						"type": "string"
+					},
+					"SchemaName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().SchemaName",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().TableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OLTP')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/StagingStockitemstest')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ODS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "StockItemID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "StockItemName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SupplierID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ColorID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UnitPackageID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "OuterPackageID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Brand",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Size",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LeadTimeDays",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "QuantityPerOuter",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "IsChillerStock",
+						"type": "bit"
+					},
+					{
+						"name": "Barcode",
+						"type": "nvarchar"
+					},
+					{
+						"name": "TaxRate",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "UnitPrice",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "RecommendedRetailPrice",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 2
+					},
+					{
+						"name": "TypicalWeightPerUnit",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 3
+					},
+					{
+						"name": "MarketingComments",
+						"type": "nvarchar"
+					},
+					{
+						"name": "InternalComments",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Photo",
+						"type": "varbinary"
+					},
+					{
+						"name": "CustomFields",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Tags",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SearchDetails",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastEditedBy",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "ValidFrom",
+						"type": "datetime2",
+						"scale": 7
+					},
+					{
+						"name": "ValidTo",
+						"type": "datetime2",
+						"scale": 7
+					}
+				],
+				"typeProperties": {
+					"schema": "Staging",
+					"table": "StockItems"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ODS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/TableList')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "OLTP",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/OLTP')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OLTPToODS')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ListTables",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT *\nFROM \n(SELECT *\nFROM WideWorldImporters.INFORMATION_SCHEMA.TABLES) T\nWHERE TABLE_SCHEMA = 'Adf' and(T.TABLE_NAME = 'StockItems' OR T.TABLE_NAME = 'People')",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "TableList",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEachTable",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "ListTables",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('ListTables').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "CopyTableToODS",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink"
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "SQLOltpTable",
+											"type": "DatasetReference",
+											"parameters": {
+												"TableName": {
+													"value": "@item().TABLE_NAME",
+													"type": "Expression"
+												},
+												"SchemaName": {
+													"value": "@item().TABLE_SCHEMA",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "SQLOdsTables",
+											"type": "DatasetReference",
+											"parameters": {
+												"TableName": {
+													"value": "@item().TABLE_NAME",
+													"type": "Expression"
+												},
+												"SchemaName": "Staging"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/TableList')]",
+				"[concat(variables('factoryId'), '/datasets/SQLOltpTable')]",
+				"[concat(variables('factoryId'), '/datasets/SQLOdsTables')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Oltp_TO_ODStest')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "copy data",
+				"activities": [
+					{
+						"name": "OltpToOds",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "StockItemID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "StockItemID",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "StockItemName",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "StockItemName",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "SupplierID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "SupplierID",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "ColorID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "ColorID",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPackageID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "UnitPackageID",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "OuterPackageID",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "OuterPackageID",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "Brand",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Brand",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Size",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Size",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "LeadTimeDays",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "LeadTimeDays",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "QuantityPerOuter",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "QuantityPerOuter",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "IsChillerStock",
+											"type": "Boolean",
+											"physicalType": "bit"
+										},
+										"sink": {
+											"name": "IsChillerStock",
+											"type": "Boolean",
+											"physicalType": "bit"
+										}
+									},
+									{
+										"source": {
+											"name": "Barcode",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "Barcode",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "TaxRate",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 3,
+											"precision": 18
+										},
+										"sink": {
+											"name": "TaxRate",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 3,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "UnitPrice",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 2,
+											"precision": 18
+										},
+										"sink": {
+											"name": "UnitPrice",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 2,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "RecommendedRetailPrice",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 2,
+											"precision": 18
+										},
+										"sink": {
+											"name": "RecommendedRetailPrice",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 2,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "TypicalWeightPerUnit",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 3,
+											"precision": 18
+										},
+										"sink": {
+											"name": "TypicalWeightPerUnit",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 3,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "MarketingComments",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "MarketingComments",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "InternalComments",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "InternalComments",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "Photo",
+											"type": "Byte[]",
+											"physicalType": "varbinary"
+										},
+										"sink": {
+											"name": "Photo",
+											"type": "Byte[]",
+											"physicalType": "varbinary"
+										}
+									},
+									{
+										"source": {
+											"name": "CustomFields",
+											"type": "String",
+											"physicalType": "nvarchar"
+										},
+										"sink": {
+											"name": "CustomFields",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "LastEditedBy",
+											"type": "Int32",
+											"physicalType": "int"
+										},
+										"sink": {
+											"name": "LastEditedBy",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "ValidFrom",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										},
+										"sink": {
+											"name": "ValidFrom",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									},
+									{
+										"source": {
+											"name": "ValidTo",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										},
+										"sink": {
+											"name": "ValidTo",
+											"type": "DateTime",
+											"physicalType": "datetime2"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Raw_Stockitemstest",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "StagingStockitemstest",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Raw_Stockitemstest')]",
+				"[concat(variables('factoryId'), '/datasets/StagingStockitemstest')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LoadDimPeopleTyopeTwo')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "delete columns from staging, ony keep columns from dim",
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "PeopleStaingTable",
+								"type": "DatasetReference"
+							},
+							"name": "PeopleStaging"
+						},
+						{
+							"dataset": {
+								"referenceName": "PeopleDim_DW",
+								"type": "DatasetReference"
+							},
+							"name": "PeopleDim"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "PeopleDim_DW",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "PeopleDim_DW",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						}
+					],
+					"transformations": [
+						{
+							"name": "AddingCurrentRow"
+						},
+						{
+							"name": "Select1"
+						},
+						{
+							"name": "Lookup1"
+						},
+						{
+							"name": "ExistingRows"
+						},
+						{
+							"name": "Select2"
+						},
+						{
+							"name": "UpdateCurrentRow"
+						},
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"script": "source(output(\n\t\tPersonID as integer,\n\t\tFullName as string,\n\t\tPreferredName as string,\n\t\tIsPermittedToLogon as boolean,\n\t\tLogonName as string,\n\t\tIsExternalLogonProvider as boolean,\n\t\tHashedPassword as binary,\n\t\tIsSystemUser as boolean,\n\t\tIsEmployee as boolean,\n\t\tIsSalesperson as boolean,\n\t\tUserPreferences as string,\n\t\tPhoneNumber as string,\n\t\tFaxNumber as string,\n\t\tEmailAddress as string,\n\t\tPhoto as binary,\n\t\tCustomFields as string,\n\t\tLastEditedBy as integer,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> PeopleStaging\nsource(output(\n\t\tId as integer,\n\t\tPersonID as integer,\n\t\tFullName as string,\n\t\tPreferredName as string,\n\t\tIsPermittedToLogon as boolean,\n\t\tLogonName as string,\n\t\tIsExternalLogonProvider as boolean,\n\t\tHashedPassword as binary,\n\t\tIsSystemUser as boolean,\n\t\tIsEmployee as boolean,\n\t\tIsSalesperson as boolean,\n\t\tUserPreferences as string,\n\t\tPhoneNumber as string,\n\t\tFaxNumber as string,\n\t\tEmailAddress as string,\n\t\tPhoto as binary,\n\t\tCustomFields as string,\n\t\tLastEditedBy as integer,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentRow as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> PeopleDim\nPeopleStaging derive(CurrentRow = 1) ~> AddingCurrentRow\nPeopleDim select(mapColumn(\n\t\tExistingId = Id,\n\t\tExistingPersonID = PersonID,\n\t\tExistingFullName = FullName,\n\t\tExistingPreferredName = PreferredName,\n\t\tExistingIsPermittedToLogon = IsPermittedToLogon,\n\t\tExistingLogonName = LogonName,\n\t\tExistingIsExternalLogonProvider = IsExternalLogonProvider,\n\t\tExistingHashedPassword = HashedPassword,\n\t\tExistingIsSystemUser = IsSystemUser,\n\t\tExistingIsEmployee = IsEmployee,\n\t\tExistingIsSalesperson = IsSalesperson,\n\t\tExistingUserPreferences = UserPreferences,\n\t\tExistingPhoneNumber = PhoneNumber,\n\t\tExistingFaxNumber = FaxNumber,\n\t\tExistingEmailAddress = EmailAddress,\n\t\tExistingPhoto = Photo,\n\t\tExistingCustomFields = CustomFields,\n\t\tExistingLastEditedBy = LastEditedBy,\n\t\tExistingValidFrom = ValidFrom,\n\t\tExistingValidTo = ValidTo,\n\t\tExistingCurrentRow = CurrentRow\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nPeopleStaging, Select1 lookup(PersonID == ExistingId,\n\tmultiple: true,\n\tbroadcast: 'auto')~> Lookup1\nLookup1 filter(!isNull(ExistingPersonID)) ~> ExistingRows\nExistingRows select(mapColumn(\n\t\tExistingId,\n\t\tExistingPersonID,\n\t\tExistingFullName,\n\t\tExistingPreferredName,\n\t\tExistingIsPermittedToLogon,\n\t\tExistingLogonName,\n\t\tExistingIsExternalLogonProvider,\n\t\tExistingHashedPassword,\n\t\tExistingIsSystemUser,\n\t\tExistingIsEmployee,\n\t\tExistingIsSalesperson,\n\t\tExistingUserPreferences,\n\t\tExistingPhoneNumber,\n\t\tExistingFaxNumber,\n\t\tExistingEmailAddress,\n\t\tExistingPhoto,\n\t\tExistingCustomFields,\n\t\tExistingLastEditedBy,\n\t\tExistingValidFrom,\n\t\tExistingValidTo,\n\t\tExistingCurrentRow\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select2\nSelect2 derive(ExistingCurrentRow = 0) ~> UpdateCurrentRow\nUpdateCurrentRow alterRow(updateIf(1==1)) ~> AlterRow1\nAddingCurrentRow sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tPersonID as integer,\n\t\tFullName as string,\n\t\tPreferredName as string,\n\t\tIsPermittedToLogon as boolean,\n\t\tLogonName as string,\n\t\tIsExternalLogonProvider as boolean,\n\t\tHashedPassword as binary,\n\t\tIsSystemUser as boolean,\n\t\tIsEmployee as boolean,\n\t\tIsSalesperson as boolean,\n\t\tUserPreferences as string,\n\t\tPhoneNumber as string,\n\t\tFaxNumber as string,\n\t\tEmailAddress as string,\n\t\tPhoto as binary,\n\t\tCustomFields as string,\n\t\tLastEditedBy as integer,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentRow as boolean\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tPersonID,\n\t\tFullName,\n\t\tPreferredName,\n\t\tIsPermittedToLogon,\n\t\tLogonName,\n\t\tIsExternalLogonProvider,\n\t\tHashedPassword,\n\t\tIsSystemUser,\n\t\tIsEmployee,\n\t\tIsSalesperson,\n\t\tUserPreferences,\n\t\tPhoneNumber,\n\t\tFaxNumber,\n\t\tEmailAddress,\n\t\tPhoto,\n\t\tCustomFields,\n\t\tLastEditedBy,\n\t\tValidFrom,\n\t\tValidTo,\n\t\tCurrentRow\n\t)) ~> sink1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tPersonID as integer,\n\t\tFullName as string,\n\t\tPreferredName as string,\n\t\tIsPermittedToLogon as boolean,\n\t\tLogonName as string,\n\t\tIsExternalLogonProvider as boolean,\n\t\tHashedPassword as binary,\n\t\tIsSystemUser as boolean,\n\t\tIsEmployee as boolean,\n\t\tIsSalesperson as boolean,\n\t\tUserPreferences as string,\n\t\tPhoneNumber as string,\n\t\tFaxNumber as string,\n\t\tEmailAddress as string,\n\t\tPhoto as binary,\n\t\tCustomFields as string,\n\t\tLastEditedBy as integer,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentRow as boolean\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['Id'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tId = ExistingId,\n\t\tPersonID = ExistingPersonID,\n\t\tFullName = ExistingFullName,\n\t\tPreferredName = ExistingPreferredName,\n\t\tIsPermittedToLogon = ExistingIsPermittedToLogon,\n\t\tLogonName = ExistingLogonName,\n\t\tIsExternalLogonProvider = ExistingIsExternalLogonProvider,\n\t\tHashedPassword = ExistingHashedPassword,\n\t\tIsSystemUser = ExistingIsSystemUser,\n\t\tIsEmployee = ExistingIsEmployee,\n\t\tIsSalesperson = ExistingIsSalesperson,\n\t\tUserPreferences = ExistingUserPreferences,\n\t\tPhoneNumber = ExistingPhoneNumber,\n\t\tFaxNumber = ExistingFaxNumber,\n\t\tEmailAddress = ExistingEmailAddress,\n\t\tPhoto = ExistingPhoto,\n\t\tCustomFields = ExistingCustomFields,\n\t\tLastEditedBy = ExistingLastEditedBy,\n\t\tValidFrom = ExistingValidFrom,\n\t\tValidTo = ExistingValidTo,\n\t\tCurrentRow = ExistingCurrentRow\n\t)) ~> sink2"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/PeopleStaingTable')]",
+				"[concat(variables('factoryId'), '/datasets/PeopleDim_DW')]"
+			]
+		}
+	]
+}

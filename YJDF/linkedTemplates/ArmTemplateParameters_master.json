@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "YJDF"
+		},
+		"AzureSqlDatabase1demo_connectionString": {
+			"value": ""
+		},
+		"DW_connectionString": {
+			"value": ""
+		},
+		"ODS_connectionString": {
+			"value": ""
+		},
+		"OLTP_connectionString": {
+			"value": ""
+		},
+		"inputblob_demo_connectionString": {
+			"value": ""
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
