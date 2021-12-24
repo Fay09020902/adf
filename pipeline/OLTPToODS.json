@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT *\nFROM \n(SELECT *\nFROM WideWorldImporters.INFORMATION_SCHEMA.TABLES) T\nWHERE T.TABLE_NAME = 'StockItems' OR T.TABLE_NAME = 'People'",
+						"sqlReaderQuery": "SELECT *\nFROM \n(SELECT *\nFROM WideWorldImporters.INFORMATION_SCHEMA.TABLES) T\nWHERE TABLE_SCHEMA = 'Adf' and(T.TABLE_NAME = 'StockItems' OR T.TABLE_NAME = 'People')",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
