@@ -1,0 +1,16 @@
+{
+	"name": "StockItemsStagingTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ODS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "Staging",
+			"table": "StockItems"
+		}
+	}
+}
