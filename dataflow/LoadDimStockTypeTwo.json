@@ -1,0 +1,65 @@
+{
+	"name": "LoadDimStockTypeTwo",
+	"properties": {
+		"description": "delete columns from staging, ony keep columns from dim",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "StockItemsStagingTable",
+						"type": "DatasetReference"
+					},
+					"name": "StockItemStaging"
+				},
+				{
+					"dataset": {
+						"referenceName": "StockItemsDim_DW",
+						"type": "DatasetReference"
+					},
+					"name": "StockItemDim"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "StockItemsDim_DW",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "StockItemsDim_DW",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AddingCurrentRow"
+				},
+				{
+					"name": "Select1"
+				},
+				{
+					"name": "Lookup1"
+				},
+				{
+					"name": "ExistingRows"
+				},
+				{
+					"name": "SelectDimColumn"
+				},
+				{
+					"name": "UpdateCurrentRow"
+				},
+				{
+					"name": "AlterRow1"
+				}
+			],
+			"script": "source(output(\n\t\tStockItemID as integer,\n\t\tStockItemName as string,\n\t\tSupplierID as integer,\n\t\tColorID as integer,\n\t\tUnitPackageID as integer,\n\t\tOuterPackageID as integer,\n\t\tBrand as string,\n\t\tSize as string,\n\t\tLeadTimeDays as integer,\n\t\tQuantityPerOuter as integer,\n\t\tIsChillerStock as boolean,\n\t\tBarcode as string,\n\t\tTaxRate as decimal(18,3),\n\t\tUnitPrice as decimal(18,2),\n\t\tRecommendedRetailPrice as decimal(18,2),\n\t\tTypicalWeightPerUnit as decimal(18,3),\n\t\tMarketingComments as string,\n\t\tInternalComments as string,\n\t\tPhoto as binary,\n\t\tCustomFields as string,\n\t\tLastEditedBy as integer,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> StockItemStaging\nsource(output(\n\t\tId as integer,\n\t\tStockItemID as integer,\n\t\tStockItemName as string,\n\t\tSupplierID as integer,\n\t\tColorID as integer,\n\t\tUnitPackageID as integer,\n\t\tOuterPackageID as integer,\n\t\tBrand as string,\n\t\tSize as string,\n\t\tLeadTimeDays as integer,\n\t\tQuantityPerOuter as integer,\n\t\tIsChillerStock as boolean,\n\t\tBarcode as string,\n\t\tTaxRate as decimal(18,3),\n\t\tUnitPrice as decimal(18,2),\n\t\tRecommendedRetailPrice as decimal(18,2),\n\t\tTypicalWeightPerUnit as decimal(18,3),\n\t\tMarketingComments as string,\n\t\tInternalComments as string,\n\t\tPhoto as binary,\n\t\tCustomFields as string,\n\t\tLastEditedBy as integer,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentRow as boolean\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> StockItemDim\nStockItemStaging derive(CurrentRow = 1) ~> AddingCurrentRow\nStockItemDim select(mapColumn(\n\t\tExistingId = Id,\n\t\tExistingStockItemID = StockItemID,\n\t\tExistingStockItemName = StockItemName,\n\t\tExistingSupplierID = SupplierID,\n\t\tExistingColorID = ColorID,\n\t\tExistingUnitPackageID = UnitPackageID,\n\t\tExistingOuterPackageID = OuterPackageID,\n\t\tExistingBrand = Brand,\n\t\tExistingSize = Size,\n\t\tExistingLeadTimeDays = LeadTimeDays,\n\t\tExistingQuantityPerOuter = QuantityPerOuter,\n\t\tExistingIsChillerStock = IsChillerStock,\n\t\tExistingBarcode = Barcode,\n\t\tExistingTaxRate = TaxRate,\n\t\tExistingUnitPrice = UnitPrice,\n\t\tExistingRecommendedRetailPrice = RecommendedRetailPrice,\n\t\tExistingTypicalWeightPerUnit = TypicalWeightPerUnit,\n\t\tExistingMarketingComments = MarketingComments,\n\t\tExistingInternalComments = InternalComments,\n\t\tExistingPhoto = Photo,\n\t\tExistingCustomFields = CustomFields,\n\t\tExistingLastEditedBy = LastEditedBy,\n\t\tExistingValidFrom = ValidFrom,\n\t\tExistingValidTo = ValidTo,\n\t\tExistingCurrentRow = CurrentRow\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> Select1\nStockItemStaging, Select1 lookup(StockItemID == ExistingStockItemID,\n\tmultiple: true,\n\tbroadcast: 'auto')~> Lookup1\nLookup1 filter(!isNull(ExistingStockItemID)) ~> ExistingRows\nExistingRows select(mapColumn(\n\t\tExistingId,\n\t\tExistingStockItemID,\n\t\tExistingStockItemName,\n\t\tExistingSupplierID,\n\t\tExistingColorID,\n\t\tExistingUnitPackageID,\n\t\tExistingOuterPackageID,\n\t\tExistingBrand,\n\t\tExistingSize,\n\t\tExistingLeadTimeDays,\n\t\tExistingQuantityPerOuter,\n\t\tExistingIsChillerStock,\n\t\tExistingBarcode,\n\t\tExistingTaxRate,\n\t\tExistingUnitPrice,\n\t\tExistingRecommendedRetailPrice,\n\t\tExistingTypicalWeightPerUnit,\n\t\tExistingMarketingComments,\n\t\tExistingInternalComments,\n\t\tExistingPhoto,\n\t\tExistingCustomFields,\n\t\tExistingLastEditedBy,\n\t\tExistingValidFrom,\n\t\tExistingValidTo,\n\t\tExistingCurrentRow\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectDimColumn\nSelectDimColumn derive(ExistingCurrentRow = 0) ~> UpdateCurrentRow\nUpdateCurrentRow alterRow(updateIf(1==1)) ~> AlterRow1\nAddingCurrentRow sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tStockItemID as integer,\n\t\tStockItemName as string,\n\t\tSupplierID as integer,\n\t\tColorID as integer,\n\t\tUnitPackageID as integer,\n\t\tOuterPackageID as integer,\n\t\tBrand as string,\n\t\tSize as string,\n\t\tLeadTimeDays as integer,\n\t\tQuantityPerOuter as integer,\n\t\tIsChillerStock as boolean,\n\t\tBarcode as string,\n\t\tTaxRate as decimal(18,3),\n\t\tUnitPrice as decimal(18,2),\n\t\tRecommendedRetailPrice as decimal(18,2),\n\t\tTypicalWeightPerUnit as decimal(18,3),\n\t\tMarketingComments as string,\n\t\tInternalComments as string,\n\t\tPhoto as binary,\n\t\tCustomFields as string,\n\t\tLastEditedBy as integer,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentRow as boolean\n\t),\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 2,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1\nAlterRow1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tId as integer,\n\t\tStockItemID as integer,\n\t\tStockItemName as string,\n\t\tSupplierID as integer,\n\t\tColorID as integer,\n\t\tUnitPackageID as integer,\n\t\tOuterPackageID as integer,\n\t\tBrand as string,\n\t\tSize as string,\n\t\tLeadTimeDays as integer,\n\t\tQuantityPerOuter as integer,\n\t\tIsChillerStock as boolean,\n\t\tBarcode as string,\n\t\tTaxRate as decimal(18,3),\n\t\tUnitPrice as decimal(18,2),\n\t\tRecommendedRetailPrice as decimal(18,2),\n\t\tTypicalWeightPerUnit as decimal(18,3),\n\t\tMarketingComments as string,\n\t\tInternalComments as string,\n\t\tPhoto as binary,\n\t\tCustomFields as string,\n\t\tLastEditedBy as integer,\n\t\tValidFrom as timestamp,\n\t\tValidTo as timestamp,\n\t\tCurrentRow as boolean\n\t),\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['Id'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError',\n\tmapColumn(\n\t\tId = ExistingId,\n\t\tStockItemID = ExistingStockItemID,\n\t\tStockItemName = ExistingStockItemName,\n\t\tSupplierID = ExistingSupplierID,\n\t\tColorID = ExistingColorID,\n\t\tUnitPackageID = ExistingUnitPackageID,\n\t\tOuterPackageID = ExistingOuterPackageID,\n\t\tBrand = ExistingBrand,\n\t\tSize = ExistingSize,\n\t\tLeadTimeDays = ExistingLeadTimeDays,\n\t\tQuantityPerOuter = ExistingQuantityPerOuter,\n\t\tIsChillerStock = ExistingIsChillerStock,\n\t\tBarcode = ExistingBarcode,\n\t\tTaxRate = ExistingTaxRate,\n\t\tUnitPrice = ExistingUnitPrice,\n\t\tRecommendedRetailPrice = ExistingRecommendedRetailPrice,\n\t\tTypicalWeightPerUnit = ExistingTypicalWeightPerUnit,\n\t\tMarketingComments = ExistingMarketingComments,\n\t\tInternalComments = ExistingInternalComments,\n\t\tPhoto = ExistingPhoto,\n\t\tCustomFields = ExistingCustomFields,\n\t\tLastEditedBy = ExistingLastEditedBy,\n\t\tValidFrom = ExistingValidFrom,\n\t\tValidTo = ExistingValidTo,\n\t\tCurrentRow = ExistingCurrentRow\n\t)) ~> sink2"
+		}
+	}
+}
