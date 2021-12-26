@@ -1,0 +1,12 @@
+{
+	"name": "Table_ODS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ODS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}

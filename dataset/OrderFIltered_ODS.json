@@ -1,8 +1,8 @@
 {
-	"name": "OrderTable_OLTP",
+	"name": "OrderFIltered_ODS",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "OLTP",
+			"referenceName": "ODS",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
@@ -81,6 +81,10 @@
 				"type": "datetime2",
 				"scale": 7
 			}
-		]
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Order_Filtered"
+		}
 	}
 }

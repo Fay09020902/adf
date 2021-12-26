@@ -1,0 +1,85 @@
+{
+	"name": "OrderStaging_ODS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ODS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "Customer Key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Stock Item Key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Order Date Key",
+				"type": "date"
+			},
+			{
+				"name": "Picked Date Key",
+				"type": "date"
+			},
+			{
+				"name": "Salesperson Key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Picker Key",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "WWI Order ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "WWI Backorder ID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Description",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Package",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Quantity",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Unit Price",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 2
+			},
+			{
+				"name": "Tax Rate",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "Last Modified When",
+				"type": "datetime2",
+				"scale": 7
+			}
+		],
+		"typeProperties": {
+			"schema": "Staging",
+			"table": "Order"
+		}
+	}
+}
