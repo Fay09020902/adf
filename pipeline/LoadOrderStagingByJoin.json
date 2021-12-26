@@ -24,7 +24,8 @@
 					"dataset": {
 						"referenceName": "Table_ODS",
 						"type": "DatasetReference"
-					}
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
