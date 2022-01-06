@@ -1,0 +1,163 @@
+{
+	"name": "ETL pipeline_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "OLTPToODS",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "OLTPToODS",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "UpdatingDimPeople",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "OLTPToODS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "UpdatingDimPeople",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "UpdatingDimStockItems",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "OLTPToODS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "UpdatingDimStockItems",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Copy_OrderLines_To_Ods",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Copy_OrderLines_To_Ods",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "FilterOrderLoadToODS",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "FilterOrderLoadToODS",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"StartDate": {
+							"value": "@pipeline().parameters.StartDate",
+							"type": "Expression"
+						},
+						"EndDate": {
+							"value": "@pipeline().parameters.EndDate",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "LoadOrderStagingByJoin",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Copy_OrderLines_To_Ods",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "FilterOrderLoadToODS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "LoadOrderStagingByJoin",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "LoadFactOrder",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "UpdatingDimStockItems",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "UpdatingDimPeople",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "LoadOrderStagingByJoin",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "LoadFactOrder",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"parameters": {
+			"StartDate": {
+				"type": "string"
+			},
+			"EndDate": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
