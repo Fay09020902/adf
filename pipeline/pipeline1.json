@@ -89,11 +89,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"Last": {
-				"type": "string"
-			}
-		},
 		"annotations": []
 	}
 }
