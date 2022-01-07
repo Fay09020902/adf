@@ -53,7 +53,7 @@
 				}
 			},
 			{
-				"name": "Execute Pipeline1",
+				"name": "ETL pipeline_copy1",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -72,10 +72,20 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "ETL pipeline",
+						"referenceName": "ETL pipeline_copy1",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"LastModifyTime": {
+							"value": "@activity('LookupLastModified').output",
+							"type": "Expression"
+						},
+						"NewWatermarkvalue": {
+							"value": "@activity('LookupNewWaterMark').output",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],

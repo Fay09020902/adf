@@ -81,11 +81,11 @@
 					"waitOnCompletion": true,
 					"parameters": {
 						"StartDate": {
-							"value": "@pipeline().parameters.StartDate",
+							"value": "@pipeline().parameters.LastModifyTime",
 							"type": "Expression"
 						},
 						"EndDate": {
-							"value": "@pipeline().parameters.EndDate",
+							"value": "@pipeline().parameters.NewWatermarkvalue",
 							"type": "Expression"
 						}
 					}
@@ -151,10 +151,10 @@
 			}
 		],
 		"parameters": {
-			"StartDate": {
+			"LastModifyTime": {
 				"type": "string"
 			},
-			"EndDate": {
+			"NewWatermarkvalue": {
 				"type": "string"
 			}
 		},
